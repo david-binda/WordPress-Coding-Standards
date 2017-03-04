@@ -14,7 +14,7 @@ matrix:
   fast_finish: true
   include:
     - php: 5.3
-      env: SHORT_OPEN_TAG=true
+      env: SHORT_OPEN_TAG=true PHPCS_BRANCH=2.7.1
 
 before_script:
     - export PHPCS_DIR=/tmp/phpcs
