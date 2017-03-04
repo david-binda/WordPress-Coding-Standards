@@ -4,13 +4,7 @@ language:
     - php
 
 php:
-    - 5.2
     - 5.3
-    - 5.4
-    - 5.5
-    - 5.6
-    - 7.0
-    - 7.1
 
 env:
   - PHPCS_BRANCH=master
@@ -20,27 +14,8 @@ env:
 matrix:
   fast_finish: true
   include:
-    # Run PHPCS against WPCS. I just picked to run it against 5.5.
-    - php: 5.5
-      env: PHPCS_BRANCH=master SNIFF=1
-    # Run against PHPCS 3.0. I just picked to run it against 5.6.
-    - php: 5.6
-      env: PHPCS_BRANCH=3.0
-    # Run against HHVM and PHP nightly.
-    - php: hhvm
-      sudo: required
-      dist: trusty 
-      group: edge 
-      env: PHPCS_BRANCH=master
-    - php: nightly
-      env: PHPCS_BRANCH=master
     - php: 5.3
       env: SHORT_OPEN_TAG=false
-  allow_failures:
-    # Allow failures for unstable builds.
-    - php: nightly
-    - php: hhvm
-    - env: PHPCS_BRANCH=3.0
 
 before_script:
     - export PHPCS_DIR=/tmp/phpcs
@@ -48,6 +23,7 @@ before_script:
     - mkdir -p $PHPCS_DIR && git clone --depth 1 https://github.com/squizlabs/PHP_CodeSniffer.git -b $PHPCS_BRANCH $PHPCS_DIR
     - $PHPCS_BIN --config-set installed_paths $(pwd)
     - if [[ "$SHORT_OPEN_TAG" == "false" ]]; then echo "short_open_tag = Off" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+    - if [[ "$SHORT_OPEN_TAG" == "true" ]]; then echo "short_open_tag = On" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
 
 script:
     - if find . -name "*.php" -exec php -l {} \; | grep "^[Parse error|Fatal error]"; then exit 1; fi;
